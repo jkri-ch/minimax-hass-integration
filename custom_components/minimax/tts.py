@@ -19,6 +19,7 @@ from .api import MiniMaxApiClient
 from .const import (
     CONF_PITCH,
     CONF_SPEED,
+    CONF_TTS_MODEL,
     CONF_VOICE_ID,
     CONF_VOL,
     DEFAULT_PITCH,
@@ -112,6 +113,8 @@ class MiniMaxTTSEntity(TextToSpeechEntity):
             pitch,
         )
 
+        model = self.subentry.data.get(CONF_TTS_MODEL, RECOMMENDED_TTS_MODEL)
+
         try:
             audio_data = await self._client.async_tts(
                 text=message,
@@ -119,7 +122,7 @@ class MiniMaxTTSEntity(TextToSpeechEntity):
                 speed=speed,
                 vol=vol,
                 pitch=int(pitch),
-                model=RECOMMENDED_TTS_MODEL,
+                model=model,
             )
             _LOGGER.debug("TTS generated %d bytes of audio", len(audio_data))
             return ("mp3", audio_data)

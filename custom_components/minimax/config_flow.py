@@ -58,7 +58,10 @@ from .const import (
     DEFAULT_VOL,
     DOMAIN,
     CHAT_MODELS,
+    CONF_TTS_MODEL,
     RECOMMENDED_CHAT_MODEL,
+    RECOMMENDED_TTS_MODEL,
+    TTS_MODELS,
     RECOMMENDED_CONVERSATION_OPTIONS,
     RECOMMENDED_STT_OPTIONS,
     RECOMMENDED_TTS_OPTIONS,
@@ -349,8 +352,22 @@ def async_minimax_option_schema(
                 SelectOptionDict(label=f"English - {voice_name}", value=voice_id)
             )
 
+        default_tts_model = options.get(CONF_TTS_MODEL, RECOMMENDED_TTS_MODEL)
+
         schema.update(
             {
+                vol.Optional(
+                    CONF_TTS_MODEL,
+                    description={"suggested_value": default_tts_model},
+                ): SelectSelector(
+                    SelectSelectorConfig(
+                        mode=SelectSelectorMode.DROPDOWN,
+                        options=[
+                            SelectOptionDict(label=m["label"], value=m["value"])
+                            for m in TTS_MODELS
+                        ],
+                    )
+                ),
                 vol.Optional(
                     CONF_VOICE_ID,
                     description={"suggested_value": default_voice},

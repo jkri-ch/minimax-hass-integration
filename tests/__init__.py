@@ -139,7 +139,7 @@ def mock_minimax_api(
         if tts_side_effect:
             tts_route.mock(side_effect=tts_side_effect)
 
-        stt_route = respx_mock.post("/v1/audio/transcription").mock(
+        stt_route = respx_mock.post("/v1/audio/transcriptions").mock(
             return_value=aioresponses.JSONResponse(
                 status=200,
                 body={"text": stt_response, "code": 0, "msg": "success"},

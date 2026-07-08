@@ -18,7 +18,7 @@ PLATFORMS = (
 
 MINIMAX_ANTHROPIC_API_URL = "https://api.minimax.io/anthropic/v1/messages"
 MINIMAX_TTS_API = "https://api.minimax.io/v1/t2a_v2"
-MINIMAX_STT_API = "https://api.minimax.io/v1/audio/transcription"
+MINIMAX_STT_API = "https://api.minimax.io/v1/audio/transcriptions"
 DEFAULT_STT_NAME = "MiniMax STT"
 DEFAULT_TTS_NAME = "MiniMax TTS"
 
@@ -27,13 +27,15 @@ CONF_RECOMMENDED = "recommended"
 CONF_PROMPT = "prompt"
 CONF_CHAT_MODEL = "chat_model"
 CONF_VOICE_ID = "voice_id"
+CONF_TTS_MODEL = "tts_model"
 
-RECOMMENDED_CHAT_MODEL = "MiniMax-M2.7"
+RECOMMENDED_CHAT_MODEL = "MiniMax-M3"
 RECOMMENDED_TTS_MODEL = "speech-2.8-hd"
-RECOMMENDED_STT_MODEL = "MiniMax-M2.7"
+RECOMMENDED_STT_MODEL = "MiniMax-M3"
 
 CHAT_MODELS = [
-    {"label": "MiniMax-M2.7 (Recommended)", "value": "MiniMax-M2.7"},
+    {"label": "MiniMax-M3 (Recommended)", "value": "MiniMax-M3"},
+    {"label": "MiniMax-M2.7", "value": "MiniMax-M2.7"},
     {
         "label": "MiniMax-M2.7-highspeed (Fast)",
         "value": "MiniMax-M2.7-highspeed",
@@ -49,6 +51,15 @@ CHAT_MODELS = [
         "value": "MiniMax-M2.1-highspeed",
     },
     {"label": "MiniMax-M2", "value": "MiniMax-M2"},
+]
+
+TTS_MODELS = [
+    {"label": "Speech 2.8 HD (Recommended)", "value": "speech-2.8-hd"},
+    {"label": "Speech 2.8 Turbo (Fast)", "value": "speech-2.8-turbo"},
+    {"label": "Speech 2.6 HD", "value": "speech-2.6-hd"},
+    {"label": "Speech 2.6 Turbo", "value": "speech-2.6-turbo"},
+    {"label": "Speech 02 HD", "value": "speech-02-hd"},
+    {"label": "Speech 02 Turbo", "value": "speech-02-turbo"},
 ]
 
 
@@ -195,7 +206,7 @@ VOICE_IDS = {
 }
 
 RECOMMENDED_CONVERSATION_OPTIONS = {
-    CONF_PROMPT: "You are EVA, a friendly Danish AI home assistant. You speak Danish. Be warm, direct and practical. Respond briefly and precisely in Danish.",
+    CONF_PROMPT: "You are a friendly AI home assistant. Be warm, direct and practical. Respond briefly and precisely.",
     CONF_RECOMMENDED: True,
     CONF_CONVERSATION_TTS_ENABLED: DEFAULT_CONVERSATION_TTS_ENABLED,
     CONF_MEMORY_ENABLED: DEFAULT_MEMORY_ENABLED,
@@ -205,6 +216,7 @@ RECOMMENDED_CONVERSATION_OPTIONS = {
 
 RECOMMENDED_TTS_OPTIONS = {
     CONF_RECOMMENDED: True,
+    CONF_TTS_MODEL: RECOMMENDED_TTS_MODEL,
     CONF_VOICE_ID: "English_PlayfulGirl",
     CONF_SPEED: DEFAULT_SPEED,
     CONF_VOL: DEFAULT_VOL,

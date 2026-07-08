@@ -122,7 +122,7 @@ class TestMiniMaxConversationEntity:
             result = await mock_conversation_entity.async_process(user_input)
 
         assert result.response.speech["plain"]["speech"] == "Hello! How can I help you?"
-        assert result.conversation_id is None
+        assert result.conversation_id
 
     @pytest.mark.asyncio
     async def test_async_process_with_thinking_content_stripped(
@@ -200,7 +200,7 @@ class TestMiniMaxConversationEntity:
         ):
             result = await mock_conversation_entity.async_process(user_input)
 
-        assert "fejl" in result.response.speech["plain"]["speech"].lower()
+        assert "sorry" in result.response.speech["plain"]["speech"].lower()
 
     @pytest.mark.asyncio
     async def test_async_process_empty_response(self, mock_conversation_entity, hass):

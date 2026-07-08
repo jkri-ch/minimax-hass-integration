@@ -628,7 +628,7 @@ class MiniMaxConversationEntity(
 
         user_prompt = self.subentry.data.get(
             CONF_PROMPT,
-            "You are EVA, a friendly AI home assistant. Be helpful and concise.",
+            "You are a friendly AI home assistant. Be helpful and concise.",
         )
         system_prompt = _build_system_prompt(user_prompt, self.hass, DOMAIN)
         if self._memory_enabled and self._memory_store:

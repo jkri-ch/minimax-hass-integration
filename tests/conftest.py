@@ -60,7 +60,7 @@ def mock_server_response():
             "choices": [{"finish_reason": "stop", "index": 0}],
             "data": "Zmxha2VfYXVkaW9fZGF0YQ==",
         },
-        "/v1/audio/transcription": {
+        "/v1/audio/transcriptions": {
             "text": "This is transcribed text.",
             "code": 0,
             "msg": "success",

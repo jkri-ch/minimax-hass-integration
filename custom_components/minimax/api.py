@@ -14,6 +14,7 @@ from .const import (
     MINIMAX_ANTHROPIC_API_URL,
     MINIMAX_STT_API,
     MINIMAX_TTS_API,
+    RECOMMENDED_CHAT_MODEL,
 )
 
 TIMEOUT = 30
@@ -43,7 +44,6 @@ class MiniMaxApiClient:
             base_url=MINIMAX_ANTHROPIC_API_URL.rsplit("/v1", 1)[0],
             http_client=httpx.AsyncClient(
                 timeout=httpx.Timeout(TIMEOUT),
-                verify=False,
             ),
         )
 
@@ -181,7 +181,7 @@ class MiniMaxApiClient:
     async def async_verify_connection(self) -> bool:
         """Verify API connection with a simple test call."""
         result = await self.async_chat(
-            model="MiniMax-M2.7",
+            model=RECOMMENDED_CHAT_MODEL,
             messages=[{"role": "user", "content": "Hi"}],
             system_prompt="",
             max_tokens=5,

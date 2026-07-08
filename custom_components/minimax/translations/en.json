@@ -102,6 +102,7 @@
           "title": "Text-to-Speech",
           "description": "Configure voice output settings.",
           "data": {
+            "tts_model": "Speech Model",
             "name": "Name",
             "voice_id": "Voice",
             "speed": "Speed",
