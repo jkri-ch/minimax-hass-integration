@@ -82,9 +82,11 @@ def _build_system_prompt(user_prompt: str, hass: HomeAssistant, agent_id: str) -
         return user_prompt
 
 
-def _get_homeassistant_tools(hass: HomeAssistant) -> list[dict[str, Any]]:
+async def _get_homeassistant_tools(hass: HomeAssistant) -> list[dict[str, Any]]:
     """Get Home Assistant services as tools for MiniMax."""
-    tools = []
+    from homeassistant.helpers.service import async_get_all_descriptions
+
+    tools: list[dict[str, Any]] = []
 
     key_domains = [
         "homeassistant",
@@ -102,17 +104,7 @@ def _get_homeassistant_tools(hass: HomeAssistant) -> list[dict[str, Any]]:
     ]
 
     try:
-        services = hass.services.async_services()
-        descriptions = {}
-        for domain in services:
-            if domain in key_domains:
-                descriptions[domain] = {}
-                for service_name, service_data in services[domain].items():
-                    descriptions[domain][service_name] = {
-                        "name": service_name,
-                        "description": service_data.get("description", ""),
-                        "fields": service_data.get("fields", {}),
-                    }
+        descriptions = await async_get_all_descriptions(hass)
     except Exception as err:
         LOGGER.warning("Could not get service descriptions: %s", err)
         return tools
@@ -126,24 +118,22 @@ def _get_homeassistant_tools(hass: HomeAssistant) -> list[dict[str, Any]]:
                 continue
 
             tool_name = f"{domain}.{service_name}"
-            description = service_desc.get(
-                "name", service_desc.get("description", f"{domain} {service_name}")
+            description = (
+                service_desc.get("description")
+                or service_desc.get("name")
+                or f"{domain} {service_name}"
             )
 
             properties = {}
             required = []
-            fields = service_desc.get("fields", {})
+            fields = service_desc.get("fields") or {}
 
             for field_name, field_desc in fields.items():
-                field_type = "string"
-                if field_desc.get("schema"):
-                    field_type = "string"
-                elif field_desc.get("example"):
-                    field_type = type(field_desc["example"]).__name__
-
+                if not isinstance(field_desc, dict):
+                    continue
                 properties[field_name] = {
-                    "type": field_type,
-                    "description": field_desc.get("description", field_name),
+                    "type": "string",
+                    "description": field_desc.get("description") or field_name,
                 }
                 if field_desc.get("required"):
                     required.append(field_name)
@@ -316,10 +306,10 @@ class MiniMaxConversationEntity(
         conversation.async_unset_agent(self.hass, self.entry)
         await super().async_will_remove_from_hass()
 
-    def _get_tools(self) -> list[dict[str, Any]]:
+    async def _get_tools(self) -> list[dict[str, Any]]:
         """Get or cache tools."""
         if self._tools is None:
-            self._tools = _get_homeassistant_tools(self.hass)
+            self._tools = await _get_homeassistant_tools(self.hass)
             if self._memory_enabled:
                 self._tools.extend(self._get_memory_tools())
         return self._tools
@@ -644,7 +634,7 @@ class MiniMaxConversationEntity(
 
         messages = [user_message]
 
-        tools = self._get_tools()
+        tools = await self._get_tools()
         _LOGGER.debug(
             "Using MiniMax API with model: %s, tools: %d, history length: %d",
             model,

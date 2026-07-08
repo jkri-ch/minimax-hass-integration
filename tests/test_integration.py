@@ -154,6 +154,7 @@ class TestConversationEntityRegistration:
             patch.object(
                 minimax_conversation,
                 "_get_homeassistant_tools",
+                new_callable=AsyncMock,
                 return_value=[],
             ),
             patch.object(
