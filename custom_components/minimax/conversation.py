@@ -536,8 +536,8 @@ class MiniMaxConversationEntity(
                     }
                 )
 
-                for result_item in tool_results:
-                    messages.append({"role": "user", "content": [result_item]})
+                if tool_results:
+                    messages.append({"role": "user", "content": tool_results})
 
                 try:
                     return await self._chat_with_api(
@@ -553,7 +553,7 @@ class MiniMaxConversationEntity(
                         )
                         text = "\n".join(text_parts) if text_parts else ""
                         if not text:
-                            text = "Jeg husker informationen, men der opstod en fejl ved bekræftelse."
+                            text = "Done, but I could not confirm the result."
                         return text, messages
                     raise
 
@@ -675,7 +675,7 @@ class MiniMaxConversationEntity(
         response_text = response_text.strip()
 
         if not response_text:
-            response_text = "Beklager, jeg kunne ikke få svar."
+            response_text = "Sorry, I could not get a response."
 
         intent_response = intent.IntentResponse(language=user_input.language)
         intent_response.async_set_speech(response_text)

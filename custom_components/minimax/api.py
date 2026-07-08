@@ -88,6 +88,13 @@ class MiniMaxApiClient:
                 "text": "\n".join(text_parts) if text_parts else "",
                 "tool_calls": tool_calls,
                 "stop_reason": response.stop_reason,
+                # Full serialized content blocks (text, tool_use, thinking).
+                # Callers must echo these back verbatim as the assistant
+                # message when submitting tool results, or MiniMax rejects
+                # the follow-up with a tool-id mismatch.
+                "content": [
+                    block.model_dump(exclude_none=True) for block in content_blocks
+                ],
             }
 
         except Exception as err:

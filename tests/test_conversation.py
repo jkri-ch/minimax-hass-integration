@@ -235,7 +235,7 @@ class TestMiniMaxConversationEntity:
         ):
             result = await mock_conversation_entity.async_process(user_input)
 
-        assert "ikke" in result.response.speech["plain"]["speech"].lower()
+        assert "could not" in result.response.speech["plain"]["speech"].lower()
 
 
 class TestConversationSetup:
