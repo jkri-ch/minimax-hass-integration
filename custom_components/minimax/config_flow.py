@@ -89,9 +89,15 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> None:
     _LOGGER.debug("Validating API key")
     api_key = data[CONF_API_KEY]
 
-    client = MiniMaxApiClient(
-        api_key=api_key,
-        session=async_get_clientsession(hass),
+    # Construct off the event loop: the anthropic SDK reads config files.
+    from functools import partial
+
+    client = await hass.async_add_executor_job(
+        partial(
+            MiniMaxApiClient,
+            api_key=api_key,
+            session=async_get_clientsession(hass),
+        )
     )
 
     if not await client.async_verify_connection():

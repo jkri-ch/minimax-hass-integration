@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from functools import partial
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -31,9 +32,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: MiniMaxConfigEntry) -> b
     """Set up MiniMax from a config entry."""
     api_key = entry.data.get(CONF_API_KEY)
 
-    client = MiniMaxApiClient(
-        api_key=api_key,
-        session=async_get_clientsession(hass),
+    # The anthropic SDK reads config files during client construction,
+    # which must not happen on the event loop.
+    client = await hass.async_add_executor_job(
+        partial(
+            MiniMaxApiClient,
+            api_key=api_key,
+            session=async_get_clientsession(hass),
+        )
     )
 
     try:
