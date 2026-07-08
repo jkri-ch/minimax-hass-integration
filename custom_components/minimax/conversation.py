@@ -11,7 +11,7 @@ from typing import Any, Literal
 from homeassistant.components import conversation
 from homeassistant.config_entries import ConfigEntry, ConfigSubentry
 from homeassistant.const import MATCH_ALL
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, SupportsResponse
 from homeassistant.helpers import intent
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -208,12 +208,20 @@ async def _call_service(
 ) -> dict[str, Any]:
     """Call a Home Assistant service."""
     try:
+        supports_response = False
+        try:
+            supports_response = (
+                hass.services.supports_response(domain, service)
+                != SupportsResponse.NONE
+            )
+        except Exception:
+            pass
         result = await hass.services.async_call(
             domain,
             service,
             data,
             blocking=True,
-            return_response=True,
+            return_response=supports_response,
         )
         LOGGER.debug("Service call %s.%s result: %s", domain, service, result)
         return {"success": True, "result": result}
